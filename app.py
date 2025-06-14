@@ -100,7 +100,8 @@ def preprocess_input(data):
 
     # Normalisasi fitur numerik
     numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-    data[numerical_features] = scaler.transform(data[numerical_features])
+    #data[numerical_features] = scaler.transform(data[numerical_features])
+    data = scaler.transform(data)
 
     return data
 
