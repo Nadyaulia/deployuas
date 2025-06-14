@@ -9,11 +9,16 @@ st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 # Load model dan scaler
 @st.cache_resource
 def load_model_and_scaler():
-    mmodel = joblib.load("obesity_model.pkl")
+    model = joblib.load("obesity_model.pkl")
     scaler = joblib.load("scaler.pkl")
     return model, scaler
 
-model, scaler = load_model_and_scaler()
+# Tambahkan validasi di app.py
+try:
+    model, scaler = load_model_and_scaler()
+    st.success("Model dan scaler berhasil dimuat.")
+except Exception as e:
+    st.error(f"Terjadi kesalahan saat memuat model/scaler: {e}")
 
 # Input numerik
 age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25)
