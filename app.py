@@ -59,6 +59,7 @@ if st.button("Prediksi Sekarang"):
 
 def preprocess_input(data):
     logging.info(f"Data awal: {data}")
+    
     # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
     calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
@@ -124,6 +125,11 @@ if st.button("Lihat Hasil Prediksi"):
 
     # Pastikan urutan kolom sesuai
     input_data = input_data[EXPECTED_COLUMNS]
+
+    # Validasi missing values
+    if input_data.isnull().values.any():
+        st.error("Data mengandung nilai kosong setelah preprocessing.")
+        st.stop()
 
     # Proses input
     try:
