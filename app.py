@@ -90,6 +90,16 @@ def preprocess_input(data):
 
     return data
 
+
+logging.info(f"Input awal: {input_data}")
+logging.info(f"Kolom setelah pengaturan urutan: {input_data.columns.tolist()}")
+
+if input_data.isnull().values.any():
+    st.error("Data mengandung nilai kosong setelah preprocessing.")
+    st.stop()
+
+
+
 if st.button("Lihat Hasil Prediksi"):
     # Daftar kolom sesuai saat model dilatih
     EXPECTED_COLUMNS = [
