@@ -61,7 +61,6 @@ def preprocess_input(data):
     logging.info(f"Data awal: {data}")
     # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
-    logging.info(f"Tipe gender_map: {type(gender_map)}")
     calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
     favc_map = {"no": 0, "yes": 1}
     smoke_map = {"no": 0, "yes": 1}
@@ -89,16 +88,15 @@ def preprocess_input(data):
     data[numerical_features] = scaler.transform(data[numerical_features])
 
     return data
-    
- # Daftar kolom sesuai saat model dilatih
-EXPECTED_COLUMNS = [
-    'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
-    'NCP', 'SCC', 'SMOKE', 'CH2O', 'family_history_with_overweight',
-    'FAF', 'TUE', 'CAEC', 'MTRANS'
-]
 
 if st.button("Lihat Hasil Prediksi"):
-   
+    # Daftar kolom sesuai saat model dilatih
+    EXPECTED_COLUMNS = [
+        'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
+        'NCP', 'SCC', 'SMOKE', 'CH2O', 'family_history_with_overweight',
+        'FAF', 'TUE', 'CAEC', 'MTRANS'
+    ]
+
     # Buat DataFrame dari input pengguna
     input_data = pd.DataFrame({
         'Age': [age],
@@ -119,8 +117,13 @@ if st.button("Lihat Hasil Prediksi"):
         'MTRANS': [mtrans]
     })
 
-# Pastikan urutan kolom sesuai
-input_data = input_data[EXPECTED_COLUMNS]
+    # Validasi nama kolom
+    if set(EXPECTED_COLUMNS) != set(input_data.columns):
+        st.error("Nama kolom tidak sesuai dengan yang diharapkan.")
+        st.stop()
+
+    # Pastikan urutan kolom sesuai
+    input_data = input_data[EXPECTED_COLUMNS]
 
     # Proses input
     try:
