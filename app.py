@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 import logging
 
 st.title("Prediksi Kategori Obesitas")
-st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
+st.write("Lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 
 # Konfigurasi logging
 logging.basicConfig(level=logging.INFO)
