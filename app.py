@@ -45,6 +45,9 @@ mtrans = st.selectbox("Jenis transportasi utama", ["Public_Transportation", "Aut
 family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"])
 scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"])
 
+
+st.write("Kolom input sekarang:", input_data.columns.tolist())
+
 # Tombol prediksi
 if st.button("Prediksi Sekarang"):
     # Validasi input
