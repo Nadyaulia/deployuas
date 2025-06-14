@@ -95,6 +95,7 @@ def preprocess_input(data):
     data['SCC'] = data['SCC'].map(scc_map).fillna(-1).astype(int)
     data['CAEC'] = data['CAEC'].map(caec_map).fillna(-1).astype(int)
     data['MTRANS'] = data['MTRANS'].map(mtrans_map).fillna(-1).astype(int)
+    data['family_history_with_overweight'] = data['family_history_with_overweight'].map(family_history_map).fillna(-1).astype(int)
 
     # Normalisasi fitur numerik
     numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
