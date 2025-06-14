@@ -89,16 +89,16 @@ def preprocess_input(data):
     data[numerical_features] = scaler.transform(data[numerical_features])
 
     return data
-
-
-if st.button("Lihat Hasil Prediksi"):
-    # Daftar kolom sesuai saat model dilatih
+    
+ # Daftar kolom sesuai saat model dilatih
 EXPECTED_COLUMNS = [
     'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
     'NCP', 'SCC', 'SMOKE', 'CH2O', 'family_history_with_overweight',
     'FAF', 'TUE', 'CAEC', 'MTRANS'
 ]
 
+if st.button("Lihat Hasil Prediksi"):
+   
     # Buat DataFrame dari input pengguna
     input_data = pd.DataFrame({
         'Age': [age],
