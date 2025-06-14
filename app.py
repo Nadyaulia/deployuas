@@ -2,16 +2,21 @@ import streamlit as st
 import pandas as pd
 import joblib
 from sklearn.preprocessing import StandardScaler
+import logging
 
-st.title("Prediksi Kategori Obesitas")
-st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
+# Konfigurasi logging
+logging.basicConfig(level=logging.INFO)
 
 # Load model dan scaler
 @st.cache_resource
 def load_model_and_scaler():
-    model = joblib.load("obesity_model.pkl")
-    scaler = joblib.load("scaler.pkl")
-    return model, scaler
+    try:
+        model = joblib.load("obesity_model.pkl")
+        scaler = joblib.load("scaler.pkl")
+        return model, scaler
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat memuat model/scaler: {e}")
+        return None, None
 
 # Tambahkan validasi di app.py
 try:
@@ -42,14 +47,21 @@ scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"]
 
 # Tombol prediksi
 if st.button("Prediksi Sekarang"):
-    # Di sini Anda akan memproses input dan menjalankan model
-    st.success("Input berhasil disimpan! Silakan lanjutkan ke proses prediksi.")
-
-
+    # Validasi input
+    if age < 1 or age > 120:
+        st.error("Usia harus antara 1 hingga 120 tahun.")
+    elif height < 0.5 or height > 2.5:
+        st.error("Tinggi badan harus antara 0.5 hingga 2.5 meter.")
+    elif weight < 20 or weight > 200:
+        st.error("Berat badan harus antara 20 hingga 200 kg.")
+    else:
+        st.success("Input berhasil disimpan! Silakan lanjutkan ke proses prediksi.")
 
 def preprocess_input(data):
+    logging.info(f"Data awal: {data}")
     # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
+    logging.info(f"Tipe gender_map: {type(gender_map)}")
     calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
     favc_map = {"no": 0, "yes": 1}
     smoke_map = {"no": 0, "yes": 1}
@@ -72,7 +84,7 @@ def preprocess_input(data):
     data['CAEC'] = caec_map.get(data['CAEC'], -1)
     data['MTRANS'] = mtrans_map.get(data['MTRANS'], -1)
 
-    # Normalisasi fitur numerik menggunakan scaler yang telah dimuat
+    # Normalisasi fitur numerik
     numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
     data[numerical_features] = scaler.transform([data[numerical_features]])
 
@@ -101,10 +113,19 @@ if st.button("Lihat Hasil Prediksi"):
     })
 
     # Proses input
-    processed_data = preprocess_input(input_data)
+    try:
+        processed_data = preprocess_input(input_data)
+        logging.info(f"Data setelah preprocessing: {processed_data}")
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat preprocessing data: {e}")
+        st.stop()
 
     # Lakukan prediksi
-    prediction = model.predict(processed_data)[0]
+    try:
+        prediction = model.predict(processed_data)[0]
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat melakukan prediksi: {e}")
+        st.stop()
 
     # Decode hasil prediksi
     categories = {
