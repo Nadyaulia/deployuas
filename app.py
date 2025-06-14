@@ -76,7 +76,7 @@ def preprocess_input(data):
     }
 
     # Encode data
-    data['Gender'] = gender_map.get(data['Gender'], -1)
+    data['Gender'] = data['Gender'].map(gender_map).fillna(-1).astype(int)
     data['CALC'] = calc_map.get(data['CALC'], -1)
     data['FAVC'] = favc_map.get(data['FAVC'], -1)
     data['SMOKE'] = smoke_map.get(data['SMOKE'], -1)
