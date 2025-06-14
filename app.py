@@ -77,16 +77,16 @@ def preprocess_input(data):
 
     # Encode data
     data['Gender'] = data['Gender'].map(gender_map).fillna(-1).astype(int)
-    data['CALC'] = calc_map.get(data['CALC'], -1)
-    data['FAVC'] = favc_map.get(data['FAVC'], -1)
-    data['SMOKE'] = smoke_map.get(data['SMOKE'], -1)
-    data['SCC'] = scc_map.get(data['SCC'], -1)
-    data['CAEC'] = caec_map.get(data['CAEC'], -1)
-    data['MTRANS'] = mtrans_map.get(data['MTRANS'], -1)
+    data['CALC'] = data['CALC'].map(calc_map).fillna(-1).astype(int)
+    data['FAVC'] = data['FAVC'].map(favc_map).fillna(-1).astype(int)
+    data['SMOKE'] = data['SMOKE'].map(smoke_map).fillna(-1).astype(int)
+    data['SCC'] = data['SCC'].map(scc_map).fillna(-1).astype(int)
+    data['CAEC'] = data['CAEC'].map(caec_map).fillna(-1).astype(int)
+    data['MTRANS'] = data['MTRANS'].map(mtrans_map).fillna(-1).astype(int)
 
     # Normalisasi fitur numerik
     numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-    data[numerical_features] = scaler.transform([data[numerical_features]])
+    data[numerical_features] = scaler.transform(data[numerical_features])
 
     return data
 
