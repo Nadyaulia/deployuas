@@ -92,6 +92,13 @@ def preprocess_input(data):
 
 
 if st.button("Lihat Hasil Prediksi"):
+    # Daftar kolom sesuai saat model dilatih
+EXPECTED_COLUMNS = [
+    'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
+    'NCP', 'SCC', 'SMOKE', 'CH2O', 'family_history_with_overweight',
+    'FAF', 'TUE', 'CAEC', 'MTRANS'
+]
+
     # Buat DataFrame dari input pengguna
     input_data = pd.DataFrame({
         'Age': [age],
@@ -111,6 +118,9 @@ if st.button("Lihat Hasil Prediksi"):
         'CAEC': [caec],
         'MTRANS': [mtrans]
     })
+
+# Pastikan urutan kolom sesuai
+input_data = input_data[EXPECTED_COLUMNS]
 
     # Proses input
     try:
