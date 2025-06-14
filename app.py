@@ -46,7 +46,6 @@ family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"]
 scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"])
 
 
-st.write("Kolom input sekarang:", input_data.columns.tolist())
 
 # Tombol prediksi
 if st.button("Prediksi Sekarang"):
@@ -95,6 +94,13 @@ def preprocess_input(data):
 
 
 if st.button("Lihat Hasil Prediksi"):
+    # Daftar kolom sesuai saat model dilatih
+    EXPECTED_COLUMNS = [
+        'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
+        'NCP', 'SCC', 'SMOKE', 'CH2O', 'family_history_with_overweight',
+        'FAF', 'TUE', 'CAEC', 'MTRANS'
+    ]
+
     # Buat DataFrame dari input pengguna
     input_data = pd.DataFrame({
         'Age': [age],
@@ -114,6 +120,15 @@ if st.button("Lihat Hasil Prediksi"):
         'CAEC': [caec],
         'MTRANS': [mtrans]
     })
+
+    # Validasi kolom
+    missing_cols = [col for col in EXPECTED_COLUMNS if col not in input_data.columns]
+    if missing_cols:
+        st.error(f"Kolom berikut hilang: {', '.join(missing_cols)}")
+        st.stop()
+
+    # Pastikan urutan kolom sesuai
+    input_data = input_data[EXPECTED_COLUMNS]
 
     # Proses input
     try:
