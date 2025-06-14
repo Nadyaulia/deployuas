@@ -84,6 +84,8 @@ def preprocess_input(data):
         "Motorbike": 3,
         "Bike": 4
     }
+    family_history_with_overweight_map = {"no": 0, "yes": 1}
+        
 
     # Encode data kategorikal
     data['Gender'] = data['Gender'].map(gender_map).fillna(-1).astype(int)
