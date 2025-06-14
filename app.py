@@ -11,16 +11,25 @@ logging.basicConfig(level=logging.INFO)
 @st.cache_resource
 def load_model_and_scaler():
     try:
-        model = joblib.load("obesity_model.pkl")
-        scaler = joblib.load("scaler.pkl")
-        return model, scaler
+        saved = joblib.load("obesity_model.pkl")
+        if isinstance(saved, dict):
+            model = saved.get("model")
+            scaler = saved.get("scaler")
+            feature_names = saved.get("feature_names")
+        else:
+            # Jika model tanpa metadata
+            model = saved
+            scaler = joblib.load("scaler.pkl")
+            feature_names = None
+
+        return model, scaler, feature_names
     except Exception as e:
         st.error(f"Terjadi kesalahan saat memuat model/scaler: {e}")
-        return None, None
+        return None, None, None
 
 # Tambahkan validasi di app.py
 try:
-    model, scaler = load_model_and_scaler()
+    model, scaler, feature_names = load_model_and_scaler()
     st.success("Model dan scaler berhasil dimuat.")
 except Exception as e:
     st.error(f"Terjadi kesalahan saat memuat model/scaler: {e}")
@@ -58,8 +67,6 @@ if st.button("Prediksi Sekarang"):
         st.success("Input berhasil disimpan! Silakan lanjutkan ke proses prediksi.")
 
 def preprocess_input(data):
-    logging.info(f"Data awal: {data}")
-    
     # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
     calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
@@ -75,7 +82,7 @@ def preprocess_input(data):
         "Bike": 4
     }
 
-    # Encode data
+    # Encode data kategorikal
     data['Gender'] = data['Gender'].map(gender_map).fillna(-1).astype(int)
     data['CALC'] = data['CALC'].map(calc_map).fillna(-1).astype(int)
     data['FAVC'] = data['FAVC'].map(favc_map).fillna(-1).astype(int)
@@ -89,7 +96,6 @@ def preprocess_input(data):
     data[numerical_features] = scaler.transform(data[numerical_features])
 
     return data
-
 
 if st.button("Lihat Hasil Prediksi"):
     # Daftar kolom sesuai saat model dilatih
@@ -119,23 +125,18 @@ if st.button("Lihat Hasil Prediksi"):
         'MTRANS': [mtrans]
     })
 
-    # Validasi nama kolom
-    if set(EXPECTED_COLUMNS) != set(input_data.columns):
-        st.error("Nama kolom tidak sesuai dengan yang diharapkan.")
-        st.stop()
-
-    # Pastikan urutan kolom sesuai
+    # Pastikan urutan kolom benar
     input_data = input_data[EXPECTED_COLUMNS]
 
-    # Debugging tambahan
-    st.write("Kolom input setelah pengaturan urutan:", input_data.columns.tolist())
-    st.write("Data input setelah pengaturan urutan:")
+    # Debugging: Tampilkan struktur data
+    st.write("Data input awal:")
     st.write(input_data)
 
     # Proses input
     try:
-        processed_data = preprocess_input(input_data)
-        logging.info(f"Data setelah preprocessing: {processed_data}")
+        processed_data = preprocess_input(input_data.copy())
+        st.write("Data setelah preprocessing:")
+        st.write(processed_data)
     except Exception as e:
         st.error(f"Terjadi kesalahan saat preprocessing data: {e}")
         st.stop()
