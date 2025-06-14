@@ -45,8 +45,6 @@ mtrans = st.selectbox("Jenis transportasi utama", ["Public_Transportation", "Aut
 family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"])
 scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"])
 
-
-
 # Tombol prediksi
 if st.button("Prediksi Sekarang"):
     # Validasi input
@@ -61,9 +59,9 @@ if st.button("Prediksi Sekarang"):
 
 def preprocess_input(data):
     logging.info(f"Data awal: {data}")
+    
     # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
-    logging.info(f"Tipe gender_map: {type(gender_map)}")
     calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
     favc_map = {"no": 0, "yes": 1}
     smoke_map = {"no": 0, "yes": 1}
@@ -94,12 +92,14 @@ def preprocess_input(data):
 
 
 if st.button("Lihat Hasil Prediksi"):
+    # Daftar kolom sesuai saat model dilatih
     EXPECTED_COLUMNS = [
         'Age', 'Gender', 'Height', 'Weight', 'CALC', 'FAVC', 'FCVC',
         'NCP', 'SCC', 'SMOKE', 'CH2O', 'family_history_with_overweight',
         'FAF', 'TUE', 'CAEC', 'MTRANS'
     ]
 
+    # Buat DataFrame dari input pengguna
     input_data = pd.DataFrame({
         'Age': [age],
         'Gender': [gender],
@@ -119,20 +119,20 @@ if st.button("Lihat Hasil Prediksi"):
         'MTRANS': [mtrans]
     })
 
-    # Validasi kolom
-    missing_cols = [col for col in EXPECTED_COLUMNS if col not in input_data.columns]
-    if missing_cols:
-        st.error(f"Kolom berikut hilang: {', '.join(missing_cols)}")
+    # Validasi nama kolom
+    if set(EXPECTED_COLUMNS) != set(input_data.columns):
+        st.error("Nama kolom tidak sesuai dengan yang diharapkan.")
         st.stop()
 
-    # Pastikan urutan kolom benar
+    # Pastikan urutan kolom sesuai
     input_data = input_data[EXPECTED_COLUMNS]
 
-    # Debugging (opsional)
-    st.write("Kolom input sekarang:", input_data.columns.tolist())
-    st.write("Data input sekarang:")
+    # Debugging tambahan
+    st.write("Kolom input setelah pengaturan urutan:", input_data.columns.tolist())
+    st.write("Data input setelah pengaturan urutan:")
     st.write(input_data)
 
+    # Proses input
     try:
         processed_data = preprocess_input(input_data)
         logging.info(f"Data setelah preprocessing: {processed_data}")
@@ -140,12 +140,14 @@ if st.button("Lihat Hasil Prediksi"):
         st.error(f"Terjadi kesalahan saat preprocessing data: {e}")
         st.stop()
 
+    # Lakukan prediksi
     try:
         prediction = model.predict(processed_data)[0]
     except Exception as e:
         st.error(f"Terjadi kesalahan saat melakukan prediksi: {e}")
         st.stop()
 
+    # Decode hasil prediksi
     categories = {
         0: "Underweight",
         1: "Normal Weight",
@@ -157,4 +159,5 @@ if st.button("Lihat Hasil Prediksi"):
     }
     result = categories.get(prediction, "Tidak Diketahui")
 
+    # Tampilkan hasil
     st.success(f"Prediksi Kategori Obesitas: {result}")
