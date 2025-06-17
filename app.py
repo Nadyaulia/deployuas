@@ -112,7 +112,6 @@ scaler.fit(train_data[numerical_features])
 
     #data= scaler.transform(data)
 
-    return data
 
 if st.button("Lihat Hasil Prediksi"):
     # Daftar kolom sesuai saat model dilatih
