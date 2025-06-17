@@ -87,7 +87,6 @@ def preprocess_input(data):
         "Bike": 4
     }
     family_history_map = {"no": 0, "yes": 1}
-        
 
     # Encode data kategorikal
     data['Gender'] = data['Gender'].map(gender_map).fillna(-1).astype(int)
@@ -98,14 +97,15 @@ def preprocess_input(data):
     data['family_history_with_overweight'] = data['family_history_with_overweight'].map(family_history_map).fillna(-1).astype(int)
     data['CAEC'] = data['CAEC'].map(caec_map).fillna(-1).astype(int)
     data['MTRANS'] = data['MTRANS'].map(mtrans_map).fillna(-1).astype(int)
-   
 
-     # Validasi scaler
+    # Daftar fitur numerik yang harus dinormalisasi
+    numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
+
+    # Normalisasi fitur numerik
     if scaler is None:
-        raise ValueError("Scaler belum dimuat. Pastikan scaler dimuat sebelum preprocessing.")
+        raise ValueError("Scaler belum dimuat. Tidak bisa melakukan transformasi.")
 
-    # Normalisasi data numerik
-    data= = scaler.transform(data)
+    data = scaler.transform(data)
 
     return data
 
