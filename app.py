@@ -105,7 +105,7 @@ def preprocess_input(data):
     if scaler is None:
         raise ValueError("Scaler belum dimuat. Tidak bisa melakukan transformasi.")
 
-    data[numerical_features] = scaler.transform(data[numerical_features])
+    data= scaler.transform(data)
 
     return data
 
