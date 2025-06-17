@@ -100,7 +100,15 @@ def preprocess_input(data):
 
     numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
 scaler = StandardScaler()
-scaler.fit(train_data[numerical_features])
+#scaler.fit(train_data[numerical_features])
+
+# Load scaler
+scaler = joblib.load("scaler.pkl")  # ini hasil dari training, bukan fit ulang!
+
+# Transformasi input user
+data[numerical_features] = scaler.transform(data[numerical_features])
+
+
 
 
     # Daftar fitur numerik yang harus dinormalisasi
