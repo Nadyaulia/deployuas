@@ -22,7 +22,7 @@ def load_model_and_scaler():
         else:
             # Jika model tanpa metadata
             model = saved
-            scaler = joblib.load("scaler.pkl")
+            scaler = joblib.load("scaler2.pkl")
             feature_names = None
 
         return model, scaler, feature_names
