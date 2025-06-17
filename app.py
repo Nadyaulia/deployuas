@@ -15,17 +15,20 @@ logging.basicConfig(level=logging.INFO)
 def load_model_and_scaler():
     try:
         saved = joblib.load("obesity_model.pkl")
-        model = saved["model"]
-        scaler = saved["scaler"]
-        feature_names = saved["feature_names"]
+        if isinstance(saved, dict):
+            model = saved.get("model")
+            scaler = saved.get("scaler")
+            feature_names = saved.get("feature_names")
+        else:
+            # Jika model tanpa metadata
+            model = saved
+            scaler = joblib.load("scaler.pkl")
+            feature_names = None
+
         return model, scaler, feature_names
     except Exception as e:
         st.error(f"Terjadi kesalahan saat memuat model/scaler: {e}")
         return None, None, None
-
-model, scaler, feature_names = load_model_and_scaler()
-if model is None or scaler is None:
-    st.stop()
 
 # Tambahkan validasi di app.py
 try:
