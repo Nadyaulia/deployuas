@@ -98,28 +98,16 @@ def preprocess_input(data):
     data['CAEC'] = data['CAEC'].map(caec_map).fillna(-1).astype(int)
     data['MTRANS'] = data['MTRANS'].map(mtrans_map).fillna(-1).astype(int)
 
-    numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-scaler = StandardScaler()
-#scaler.fit(train_data[numerical_features])
-
-# Load scaler
-scaler = joblib.load("scaler.pkl")  # ini hasil dari training, bukan fit ulang!
-
-# Transformasi input user
-data[numerical_features] = scaler.transform(data[numerical_features])
-
-
-
-
     # Daftar fitur numerik yang harus dinormalisasi
-    #numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
+    numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
 
     # Normalisasi fitur numerik
-   # if scaler is None:
-    #    raise ValueError("Scaler belum dimuat. Tidak bisa melakukan transformasi.")
+    if scaler is None:
+        raise ValueError("Scaler belum dimuat. Tidak bisa melakukan transformasi.")
 
-    #data= scaler.transform(data)
+    data[numerical_features] = scaler.transform(data[numerical_features])
 
+    return data
 
 if st.button("Lihat Hasil Prediksi"):
     # Daftar kolom sesuai saat model dilatih
