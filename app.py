@@ -105,7 +105,7 @@ def preprocess_input(data):
         raise ValueError("Scaler belum dimuat. Pastikan scaler dimuat sebelum preprocessing.")
 
     # Normalisasi data numerik
-    data[numerical_features] = scaler.transform(data[numerical_features])
+    data= = scaler.transform(data)
 
     return data
 
