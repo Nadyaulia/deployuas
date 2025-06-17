@@ -10,7 +10,6 @@ st.write("Lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 # Konfigurasi logging
 logging.basicConfig(level=logging.INFO)
 
-# Load model dan scaler
 @st.cache_resource
 def load_model_and_scaler():
     try:
@@ -22,8 +21,11 @@ def load_model_and_scaler():
         else:
             # Jika model tanpa metadata
             model = saved
-            scaler = joblib.load("scaler.pkl")
+            scaler = joblib.load("scaler.pkl")  # Pastikan scaler.pkl ada
             feature_names = None
+
+        if model is None or scaler is None:
+            raise ValueError("Model atau scaler tidak berhasil dimuat.")
 
         return model, scaler, feature_names
     except Exception as e:
@@ -98,10 +100,12 @@ def preprocess_input(data):
     data['MTRANS'] = data['MTRANS'].map(mtrans_map).fillna(-1).astype(int)
    
 
-    # Normalisasi fitur numerik
-    numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-    #data[numerical_features] = scaler.transform(data[numerical_features])
-    data = scaler.transform(data)
+     # Validasi scaler
+    if scaler is None:
+        raise ValueError("Scaler belum dimuat. Pastikan scaler dimuat sebelum preprocessing.")
+
+    # Normalisasi data numerik
+    data[numerical_features] = scaler.transform(data[numerical_features])
 
     return data
 
